@@ -8,6 +8,9 @@ public static class ConstantesDominio
         public const string ERRO_USUARIO_INVALIDO = "O identificador do usuário deve ser maior que 0";
         public const string ERRO_ALUNO_INVALIDO = "O identificador do aluno deve ser maior que 0";
         public const string ERRO_ATIVIDADE_INVALIDA = "O identificador da atividade deve ser maior que 0";
+        public const string ERRO_MOTIVO_CANCELAMENTO_EXTENSO = "O motivo do cancelamento deve conter no máximo 500 caracteres";
+        public const string ERRO_MOTIVO_CANCELAMENTO_NAO_INFORMADO = "O motivo do cancelamento deve ser informado";
+        public const string ERRO_CANCELADA_FLAG_CANCELADA_INATIVA = "A flag de cancelamentodeve ser marcada";
     }
 
 }

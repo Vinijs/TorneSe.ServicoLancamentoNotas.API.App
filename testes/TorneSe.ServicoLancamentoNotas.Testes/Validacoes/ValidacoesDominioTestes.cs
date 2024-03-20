@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
 using System.Linq;
+using TorneSe.ServicoLancamentoNotas.Dominio.Constantes;
 using TorneSe.ServicoLancamentoNotas.Dominio.SeedWork;
 using TorneSe.ServicoLancamentoNotas.Dominio.Validacoes;
 using TorneSe.ServicoLancamentoNotas.Testes.Dominio.Entidades;
 using TorneSe.ServicoLancamentoNotas.Testes.Fakes;
+using TorneSe.ServicoLancamentoNotas.Testes.Validacoes.Validador;
 using Xunit;
 
 namespace TorneSe.ServicoLancamentoNotas.Testes.Validacoes;
@@ -142,5 +144,47 @@ public class ValidacoesDominioTestes
         objetoNotificavel.Notificacoes.Should().BeEmpty();
         objetoNotificavel.Notificacoes.Should().HaveCount(default(int));
     }
+
+    [Fact(DisplayName = nameof(Validar_QuandoValidacaoFalha_DeveNotificarObjeto))]
+    [Trait("Dominio", "ValidacoesDominio - Validacoes")]
+    public void Validar_QuandoValidacaoFalha_DeveNotificarObjeto()
+    {
+        //Arrange
+        var objetoNotificavel = new NotaFake(-1,-1,-1,-1);
+        var validador = NotaFakeValidador.Instance;
+
+        //Act
+        ValidacoesDominio.Validar(objetoNotificavel, validador);
+
+        //Assert
+        objetoNotificavel.Notificacoes.Should().NotBeEmpty();
+        objetoNotificavel.Notificacoes.Should().HaveCount(4);
+        objetoNotificavel.Notificacoes.Select(x => x.Mensagem).Should().
+            Contain(ConstantesDominio.MensagemValidacoes.ERRO_USUARIO_INVALIDO);
+        objetoNotificavel.Notificacoes.Select(x => x.Mensagem).Should().
+            Contain(ConstantesDominio.MensagemValidacoes.ERRO_ALUNO_INVALIDO);
+        objetoNotificavel.Notificacoes.Select(x => x.Mensagem).Should().
+            Contain(ConstantesDominio.MensagemValidacoes.ERRO_ATIVIDADE_INVALIDA);
+        objetoNotificavel.Notificacoes.Select(x => x.Mensagem).Should().
+            Contain(ConstantesDominio.MensagemValidacoes.ERRO_VALOR_NOTA_INVALIDO);
+        objetoNotificavel.EhValida.Should().BeFalse();
+    }
+
+    [Fact(DisplayName = nameof(Validar_QuandoValidacaoPassa_NaoDeveNotificarObjeto))]
+    [Trait("Dominio", "ValidacoesDominio - Validacoes")]
+    public void Validar_QuandoValidacaoPassa_NaoDeveNotificarObjeto()
+    {
+        //Arrange
+        var objetoNotificavel = new NotaFake(1, 1, 1, 1);
+        var validador = NotaFakeValidador.Instance;
+
+        //Act
+        ValidacoesDominio.Validar(objetoNotificavel, validador);
+
+        //Assert
+        objetoNotificavel.Notificacoes.Should().BeEmpty();
+        objetoNotificavel.EhValida.Should().BeTrue();
+    }
+
 
 }
