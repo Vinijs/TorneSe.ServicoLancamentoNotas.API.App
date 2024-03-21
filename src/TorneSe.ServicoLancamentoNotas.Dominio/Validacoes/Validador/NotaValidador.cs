@@ -21,7 +21,7 @@ public class NotaValidador : AbstractValidator<Nota>
             .WithMessage(ConstantesDominio.MensagemValidacoes.ERRO_USUARIO_INVALIDO);
 
         RuleFor(x => x.ValorNota)
-            .ExclusiveBetween(0.00, 10.00)
+            .InclusiveBetween(0.00, 10.00)
             .WithMessage(ConstantesDominio.MensagemValidacoes.ERRO_VALOR_NOTA_INVALIDO);
 
         When(x => x.MotivoCancelamento is not null, () =>

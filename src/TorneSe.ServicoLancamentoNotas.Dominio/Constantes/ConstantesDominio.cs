@@ -13,4 +13,9 @@ public static class ConstantesDominio
         public const string ERRO_CANCELADA_FLAG_CANCELADA_INATIVA = "A flag de cancelamentodeve ser marcada";
     }
 
+    public static class Mensagens
+    {
+        public const string NOTA_CANCELADA_POR_RETENTATIVA = "O aluno recebeu uma nova oportunidade de refazer a atividade";
+    }
+
 }
