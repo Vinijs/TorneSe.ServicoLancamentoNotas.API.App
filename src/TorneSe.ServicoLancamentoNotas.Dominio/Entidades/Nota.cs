@@ -7,7 +7,7 @@ using TorneSe.ServicoLancamentoNotas.Dominio.Validacoes.Validador;
 
 namespace TorneSe.ServicoLancamentoNotas.Dominio.Entidades;
 
-public class Nota : Entidade, IRaizAgregacao
+public partial class Nota : Entidade, IRaizAgregacao
 {
     private const double VALOR_MAXIMO_NOTA = 10.00;
     public int AlunoId { get; private set; }
@@ -27,7 +27,7 @@ public class Nota : Entidade, IRaizAgregacao
         DataLancamento = notaParams.DataLancamento;
         UsuarioId = notaParams.UsuarioId;
         CanceladaPorRetentativa = false;
-        StatusIntegracao = StatusIntegracao.AguardandoIntegracao;
+        StatusIntegracao = notaParams.StatusIntegracao;
         DataCriacao = DateTime.Now;
         //Validar();
 
@@ -68,20 +68,23 @@ public class Nota : Entidade, IRaizAgregacao
         Validar();
     }
 
-    public void AtualizarStatusIntegracao(StatusIntegracao novoStatus)
+    public void AlterarStatusIntegracaoParaEnviada()
     {
-        if (StatusIntegracao == StatusIntegracao.AguardandoIntegracao &&
-                novoStatus == StatusIntegracao.IntegradaComSucesso
-                || novoStatus == StatusIntegracao.FalhaNaIntegracao)
+        ValidarStatus(PodeAlterarStatusParaEnviado, StatusIntegracao.EnviadaParaintegracao);
+        if(Notificacoes.Any())
         {
-            Notificar(new Notificacao(nameof(StatusIntegracao), 
-                $"Não é permitida a mudança do status {StatusIntegracao} para {novoStatus}"));
             EhValida = false;
             return;
         }
-
-        StatusIntegracao = novoStatus;
+        StatusIntegracao = StatusIntegracao.EnviadaParaintegracao;
         DataAtualizacao = DateTime.Now;
         Validar();
+    }
+
+    private void ValidarStatus(Func<bool> podeAlterarStatus, StatusIntegracao proximoStatus)
+    {
+        if (!podeAlterarStatus())
+            Notificar(new(nameof(StatusIntegracao),
+                string.Format(ConstantesDominio.Mensagens.ALTERACAO_DE_STATUS_NAO_PERMITIDA, proximoStatus.ToString())));
     }
 }
