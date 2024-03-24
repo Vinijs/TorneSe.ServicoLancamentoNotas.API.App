@@ -81,6 +81,32 @@ public partial class Nota : Entidade, IRaizAgregacao
         Validar();
     }
 
+    public void AlterarStatusIntegracaoParaFalhaIntegracao()
+    {
+        ValidarStatus(PodeAlterarStatusParaFalhaIntegracao, StatusIntegracao.FalhaNaIntegracao);
+        if (Notificacoes.Any())
+        {
+            EhValida = false;
+            return;
+        }
+        StatusIntegracao = StatusIntegracao.FalhaNaIntegracao;
+        DataAtualizacao = DateTime.Now;
+        Validar();
+    }
+
+    public void AlterarStatusIntegracaoParaComSucesso()
+    {
+        ValidarStatus(PodeAlterarStatusParaIntegradaComSucesso, StatusIntegracao.IntegradaComSucesso);
+        if (Notificacoes.Any())
+        {
+            EhValida = false;
+            return;
+        }
+        StatusIntegracao = StatusIntegracao.IntegradaComSucesso;
+        DataAtualizacao = DateTime.Now;
+        Validar();
+    }
+
     private void ValidarStatus(Func<bool> podeAlterarStatus, StatusIntegracao proximoStatus)
     {
         if (!podeAlterarStatus())
