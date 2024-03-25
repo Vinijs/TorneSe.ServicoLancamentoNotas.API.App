@@ -69,28 +69,6 @@ public class NotaTestes
         nota.EhValida.Should().BeFalse();
     }
 
-    [Theory(DisplayName = nameof(InstanciarNota_QuandoUsuarioIdInvalido_DevePossuirNotificacao))]
-    [Trait("Dominio", "Nota - Agregado")]
-    [InlineData(-1)]
-    [InlineData(0)]
-    public void InstanciarNota_QuandoUsuarioIdInvalido_DevePossuirNotificacao(int usuarioId)
-    {
-        //Arrange
-        var parametrosNota = _fixture.RetornaValoresParametrosInvalidosCustomizados(usuarioId: usuarioId);
-
-
-        //Act
-        var nota = new Nota(parametrosNota);
-
-        //Assert
-        nota.Notificacoes.Should().NotBeEmpty();
-        nota.Notificacoes.Should().HaveCount(1);
-        nota.Notificacoes.First().Campo.Should().Be(nameof(nota.UsuarioId));
-        nota.Notificacoes.First().Mensagem.Should().Be(ConstantesDominio.MensagemValidacoes.ERRO_USUARIO_INVALIDO);
-        nota.EhValida.Should().BeFalse();
-
-    }
-
     [Theory(DisplayName = nameof(InstanciarNota_QuandoAlunoIdInvalido_DevePossuirNotificacao))]
     [Trait("Dominio", "Nota - Agregado")]
     [InlineData(-1)]

@@ -14,16 +14,16 @@ public class NotaTestesFixture : BaseFixture
     public double RetornaValorNotaAleatorioValido()
         => Faker.Random.Double(0.00, 10.00);
     public NotaParams RetornaValoresParametrosInvalidosCustomizados(int? alunoId = null, int? atividadeId = null,
-                                                                    double? valorNota = null, int? usuarioId = null)
+                                                                    double? valorNota = null)
         => new(alunoId ?? RetornaNumeroIdRandomico(), atividadeId ?? RetornaNumeroIdRandomico(), valorNota ?? RetornaValorNotaAleatorioValido(),
-               DateTime.Now, usuarioId ?? RetornaNumeroIdRandomico());
+               DateTime.Now);
     public NotaParams RetornaValoresParametrosNotaValidos()
         => new(RetornaNumeroIdRandomico(), RetornaNumeroIdRandomico(), 
-                                    RetornaValorNotaAleatorioValido(), DateTime.Now, RetornaNumeroIdRandomico());
+                                    RetornaValorNotaAleatorioValido(), DateTime.Now);
 
     public NotaParams RetornaValoresParametrosNotaValidosComStatus(StatusIntegracao statusIntegracao)
        => new(RetornaNumeroIdRandomico(), RetornaNumeroIdRandomico(),
-                                   RetornaValorNotaAleatorioValido(), DateTime.Now, RetornaNumeroIdRandomico(),statusIntegracao);
+                                   RetornaValorNotaAleatorioValido(), DateTime.Now,statusIntegracao);
 }
 
 [CollectionDefinition(nameof(NotaTestesFixture))]
