@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorneSe.ServicoLancamentoNo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aplicacao", "Aplicacao", "{AE14959D-7D25-497B-9113-45CCD16BBF6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TorneSe.ServicoLancamentoNotas.Aplicacao", "src\TorneSe.ServicoLancamentoNotas.Aplicacao\TorneSe.ServicoLancamentoNotas.Aplicacao.csproj", "{E68943A1-B15F-452F-8644-3D23522B541B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorneSe.ServicoLancamentoNotas.Aplicacao", "src\TorneSe.ServicoLancamentoNotas.Aplicacao\TorneSe.ServicoLancamentoNotas.Aplicacao.csproj", "{E68943A1-B15F-452F-8644-3D23522B541B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
