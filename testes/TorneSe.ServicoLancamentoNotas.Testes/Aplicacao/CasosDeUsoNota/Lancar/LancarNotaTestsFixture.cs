@@ -5,7 +5,7 @@ using TorneSe.ServicoLancamentoNotas.Dominio.Params;
 using TorneSe.ServicoLancamentoNotas.Testes.Comum;
 using Xunit;
 
-namespace TorneSe.ServicoLancamentoNotas.Testes.Aplicacao.CasosDeUso.LancarNota;
+namespace TorneSe.ServicoLancamentoNotas.Testes.Aplicacao.CasosDeUsoNota.Lancar;
 
 [CollectionDefinition(nameof(LancarNotaTestsFixture))]
 public class LancarNotaTestsFixtureCollection

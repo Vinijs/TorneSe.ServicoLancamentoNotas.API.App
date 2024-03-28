@@ -16,5 +16,5 @@ public static class MapeadorAplicacao
 
     public static NotaOutputModel NotaEmNotaOutputModel(Nota nota)
         => new(nota.AlunoId, nota.AtividadeId, nota.ValorNota, nota.DataLancamento, nota.Cancelada, 
-            nota.MotivoCancelamento, nota.StatusIntegracao);
+            nota.MotivoCancelamento!, nota.StatusIntegracao);
 }
