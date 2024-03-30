@@ -29,4 +29,7 @@ public class LancarNotaTestsFixture
     public LancarNotaInput DevolveNotaInputValidoSubstitutivo()
         => new(RetornaNumeroIdRandomico(), RetornaNumeroIdRandomico(), RetornaNumeroIdRandomico(),
             RetornaValorNotaAleatorioValido(), true);
+
+    public LancarNotaInput DevolveNotaInputInValido()
+        => new(-1, -1, -1, 11, false);
 }
