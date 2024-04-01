@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,6 +10,8 @@ using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Comum;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Consultar;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Consultar.DTOs;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Consultar.Interfaces;
+using TorneSe.ServicoLancamentoNotas.Aplicacao.Comum;
+using TorneSe.ServicoLancamentoNotas.Aplicacao.Enums;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
 using TorneSe.ServicoLancamentoNotas.Dominio.SeedWork.BuscaRepository;
 using Xunit;
@@ -19,18 +23,20 @@ public class ConsultarNotaTests
 {
     private readonly ConsultarNotaTestsFixture _fixture;
     private readonly Mock<INotaRepository> _notaRepository;
+    private readonly Mock<ILogger<ConsultaNota>> _logger;
     private readonly IConsultaNota _sut;
 
     public ConsultarNotaTests(ConsultarNotaTestsFixture fixture)
     {
         _fixture = fixture;
         _notaRepository = new();
-        _sut = new ConsultaNota(_notaRepository.Object);
+        _logger = new();
+        _sut = new ConsultaNota(_notaRepository.Object, _logger.Object);
     }
 
-    [Fact(DisplayName = nameof(Handle_QuandoBuscaRetornaValores_DeveRetornarOutputComValores))]
+    [Fact(DisplayName = nameof(Handle_QuandoBuscaRetornaValores_DeveRetornarResultadoComSucessoEValores))]
     [Trait("Aplicacao", "Nota - Casos de Uso")]
-    public async Task Handle_QuandoBuscaRetornaValores_DeveRetornarOutputComValores()
+    public async Task Handle_QuandoBuscaRetornaValores_DeveRetornarResultadoComSucessoEValores()
     {
         //Arrange
         var buscarInput = _fixture.RetornaListaBuscaInput();
@@ -43,12 +49,15 @@ public class ConsultarNotaTests
 
         //Assert
         output.Should().NotBeNull();
-        output.Should().BeAssignableTo<ListaNotaOutput>();
-        output.Total.Should().Be(buscaOutput.Total);
-        output.Pagina.Should().Be(buscaOutput.Pagina);
-        output.PorPagina.Should().Be(buscaOutput.PorPagina);
-        output.Items.Should().HaveCount(buscaOutput.Items.Count);
-        output.Items.ToList().ForEach(item =>
+        output.Should().BeAssignableTo<Resultado<ListaNotaOutput>>();
+        output.Sucesso.Should().BeTrue();
+        output.Erro.Should().BeNull();
+        output.DescricaoErro.Should().BeNull();
+        output.Dado.Total.Should().Be(buscaOutput.Total);
+        output.Dado.Pagina.Should().Be(buscaOutput.Pagina);
+        output.Dado.PorPagina.Should().Be(buscaOutput.PorPagina);
+        output.Dado.Items.Should().HaveCount(buscaOutput.Items.Count);
+        output.Dado.Items.ToList().ForEach(item =>
         {
             var nota = buscaOutput.Items
                     .FirstOrDefault(x => x.AtividadeId == item.AtividadeId && item.AlunoId == x.AlunoId);
@@ -59,9 +68,9 @@ public class ConsultarNotaTests
         });
     }
 
-    [Fact(DisplayName = nameof(Handle_QuandoBuscaNaoRetornaValores_DeveRetornarOutputVazio))]
+    [Fact(DisplayName = nameof(Handle_QuandoBuscaNaoRetornaValores_DeveRetornarResultadoComSucessoOutputVazio))]
     [Trait("Aplicacao", "Nota - Casos de Uso")]
-    public async Task Handle_QuandoBuscaNaoRetornaValores_DeveRetornarOutputVazio()
+    public async Task Handle_QuandoBuscaNaoRetornaValores_DeveRetornarResultadoComSucessoOutputVazio()
     {
         //Arrange
         var buscarInput = _fixture.RetornaListaBuscaInput();
@@ -74,10 +83,35 @@ public class ConsultarNotaTests
 
         //Assert
         output.Should().NotBeNull();
-        output.Should().BeAssignableTo<ListaNotaOutput>();
-        output.Total.Should().Be(buscaOutput.Total);
-        output.Pagina.Should().Be(buscaOutput.Pagina);
-        output.PorPagina.Should().Be(buscaOutput.PorPagina);
-        output.Items.Should().HaveCount(buscaOutput.Items.Count);
+        output.Should().BeAssignableTo<Resultado<ListaNotaOutput>>();
+        output.Sucesso.Should().BeTrue();
+        output.Erro.Should().BeNull();
+        output.DescricaoErro.Should().BeNull();
+        output.Dado.Total.Should().Be(buscaOutput.Total);
+        output.Dado.Pagina.Should().Be(buscaOutput.Pagina);
+        output.Dado.PorPagina.Should().Be(buscaOutput.PorPagina);
+        output.Dado.Items.Should().HaveCount(buscaOutput.Items.Count);
+    }
+
+    [Fact(DisplayName = nameof(Handle_QuandoBuscaLancaExcecaoNaoEsperada_DeveRetornarResultadoComFalhaEErro))]
+    [Trait("Aplicacao", "Nota - Casos de Uso")]
+    public async Task Handle_QuandoBuscaLancaExcecaoNaoEsperada_DeveRetornarResultadoComFalhaEErro()
+    {
+        //Arrange
+        var buscarInput = _fixture.RetornaListaBuscaInput();
+        _notaRepository.Setup(x => x.Buscar(It.IsAny<BuscarInput>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception());
+
+        //Act
+        var output = await _sut.Handle(buscarInput, CancellationToken.None);
+
+        //Assert
+        output.Should().NotBeNull();
+        output.Should().BeAssignableTo<Resultado<ListaNotaOutput>>();
+        output.Sucesso.Should().BeFalse();
+        output.Erro.Should().NotBeNull();
+        output.Erro.Should().Be(TipoErro.ErroInesperado);
+        output.DescricaoErro.Should().NotBeNull();
+        output.Dado.Should().BeNull();
     }
 }
