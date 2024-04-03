@@ -25,7 +25,7 @@ public class UnitOfWorkTestsFixture :
         var dbContext = new ServicoLancamentoNotaDbContext
             (
                 new DbContextOptionsBuilder<ServicoLancamentoNotaDbContext>()
-                    .UseInMemoryDatabase("integration-tests")
+                    .UseInMemoryDatabase("integration-tests-unit-of-work")
                     .Options
             );
 
