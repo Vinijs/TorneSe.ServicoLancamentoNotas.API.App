@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Aplicacao\" />
-    <Folder Include="Infra.Data\UoW\" />
   </ItemGroup>
 
   <ItemGroup>
