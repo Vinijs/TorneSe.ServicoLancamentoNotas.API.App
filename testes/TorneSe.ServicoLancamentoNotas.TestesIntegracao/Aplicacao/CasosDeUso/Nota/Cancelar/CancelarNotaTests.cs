@@ -41,7 +41,7 @@ public class CancelarNotaTests
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoCancelarInput_DeveCancelarNota))]
-    [Trait("Aplicacao", "Integracao/Aplicacao - Casos de Uso")]
+    [Trait("Aplicacao", "Integracao/CancelarNota - Casos de Uso")]
     public async Task Handle_QuandoCancelarInput_DeveCancelarNota()
     {
         var nota = _fixture.RetornaNota();
@@ -68,7 +68,7 @@ public class CancelarNotaTests
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoNotaNaoEncontrada_DeveRetornarErroNotaNaoEncontrada))]
-    [Trait("Aplicacao", "Integracao/Aplicacao - Casos de Uso")]
+    [Trait("Aplicacao", "Integracao/CancelarNota - Casos de Uso")]
     public async Task Handle_QuandoNotaNaoEncontrada_DeveRetornarErroNotaNaoEncontrada()
     {
         var motivoCancelamento = "Lançamento indevido";
@@ -83,7 +83,7 @@ public class CancelarNotaTests
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoInputInvalido_DeveRetornarErroNotaInvalida))]
-    [Trait("Aplicacao", "Integracao/Aplicacao - Casos de Uso")]
+    [Trait("Aplicacao", "Integracao/CancelarNota - Casos de Uso")]
     public async Task Handle_QuandoInputInvalido_DeveRetornarErroNotaInvalida()
     {
         var nota = _fixture.RetornaNota();
