@@ -1,12 +1,14 @@
-﻿namespace TorneSe.ServicoLancamentoNotas.App.Configurations;
+﻿using TorneSe.ServicoLancamentoNotas.Infra.CrossCutting.IoC;
+
+namespace TorneSe.ServicoLancamentoNotas.App.Configurations;
 public static class ConfigurarInjecaoDependenciaExtension
 {
     public static IServiceCollection ConfigurarServicos(this IServiceCollection services)
     {
         services.AddControllers();
-        services.AddSingleton<WeatherForecast>();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        services.RegistrarServicos();
         services.AddEndpointsApiExplorer();
+        services.AddHttpContextAccessor();
         services.AddSwaggerGen();
         return services;
     }
