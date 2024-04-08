@@ -1,18 +1,19 @@
-﻿namespace TorneSe.ServicoLancamentoNotas.App.Configurations;
+﻿using TorneSe.ServicoLancamentoNotas.App.Configurations.Swagger;
+using TorneSe.ServicoLancamentoNotas.App.Middlewares;
+
+namespace TorneSe.ServicoLancamentoNotas.App.Configurations;
 
 public static class WebApplicationExtensions
 {
     public static WebApplication UsarServicos(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        app.UserConfiguracoesSwagger();
 
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+
+        app.UseMiddleware<BuscaTenantMiddleware>();
 
         app.MapControllers();
 
@@ -26,6 +27,12 @@ public static class WebApplicationExtensions
         {
             throw new ArgumentException("Classe Startup.cs Inválida");
         }
+
+        Environment.SetEnvironmentVariable("TENANTS", "torne-se-csharp;torne-se-javascript;torne-se-java");
+        Environment.SetEnvironmentVariable("CONNECTION_STRING_TORNESECSHARP", "connection_mysql");
+        Environment.SetEnvironmentVariable("CONNECTION_STRING_JAVA", "connection_mysql");
+        Environment.SetEnvironmentVariable("CONNECTION_STRING_JAVASCRIPT", "connection_mysql");
+
 
         startupApplication.ConfigureServices(applicationBuilder.Services);
 

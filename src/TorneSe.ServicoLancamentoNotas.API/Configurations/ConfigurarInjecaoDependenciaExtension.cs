@@ -1,4 +1,6 @@
-﻿using TorneSe.ServicoLancamentoNotas.Infra.CrossCutting.IoC;
+﻿using TorneSe.ServicoLancamentoNotas.App.Configurations.Swagger;
+using TorneSe.ServicoLancamentoNotas.App.Middlewares;
+using TorneSe.ServicoLancamentoNotas.Infra.CrossCutting.IoC;
 
 namespace TorneSe.ServicoLancamentoNotas.App.Configurations;
 public static class ConfigurarInjecaoDependenciaExtension
@@ -9,7 +11,8 @@ public static class ConfigurarInjecaoDependenciaExtension
         services.RegistrarServicos();
         services.AddEndpointsApiExplorer();
         services.AddHttpContextAccessor();
-        services.AddSwaggerGen();
+        services.AddScoped<BuscaTenantMiddleware>();
+        services.AdicionarConfiguracoesSwagger();
         return services;
     }
 }
