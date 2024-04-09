@@ -20,7 +20,8 @@ public class DbContextOptionsBuilderVisitor : IVisitor<DbContextOptionsBuilder>
         var tenant = _tenantProvider.Tenant;
         var connectionString = _variaveisAmbienteProvider.ObterConnectionStringPorTenant(tenant);
         if (!string.IsNullOrWhiteSpace(connectionString))
-            objetoVisitado.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            objetoVisitado.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+                options => options.MigrationsAssembly("TorneSe.ServicolancamentoNotas.Infra.Data"));
 
         return objetoVisitado;
     }
