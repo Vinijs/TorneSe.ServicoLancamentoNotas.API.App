@@ -79,7 +79,7 @@ public class CancelarNotaTests
         resposta.Should().NotBeNull();
         resposta.Sucesso.Should().BeFalse();
         resposta.Dado.Should().BeNull();
-        resposta.Erro.Should().Be(TipoErro.NotaNaoEncontrada);
+        resposta.Erro.Should().Be(TipoErro.RecursoNaoEncontrado);
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoInputInvalido_DeveRetornarErroNotaInvalida))]
