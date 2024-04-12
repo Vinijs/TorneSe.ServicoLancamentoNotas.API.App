@@ -1,0 +1,5 @@
+docker run -p 3308:3306 --name api-notas-db -e MYSQL_ROOT_PASSWORD=root -d mysql
+
+Add-Migration Inicial -Startup TorneSe.ServicoLancamentoNotas.App -Args 'torne-se-csharp'
+
+Update-DataBase Add-Migration Inicial -Startup TorneSe.ServicoLancamentoNotas.App
