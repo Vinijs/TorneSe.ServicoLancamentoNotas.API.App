@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Cancelar;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Cancelar.Interfaces;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Enums;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Interfaces;
+using TorneSe.ServicoLancamentoNotas.Dominio.Clients;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
+using TorneSe.ServicoLancamentoNotas.Infra.Data.Clients.Curso;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Contexto;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Repositories;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.UoW;
@@ -25,6 +28,7 @@ public class CancelarNotaTests
     private readonly INotaRepository _notaRepository;
     private readonly ILogger<CancelarNota> _logger;
     private readonly ServicoLancamentoNotaDbContext _context;
+    private readonly ICursoClient _cursoClient;
     private readonly ICancelarNota _sut;
 
     public CancelarNotaTests(CancelarNotaTestsFixture fixture)
@@ -35,7 +39,8 @@ public class CancelarNotaTests
         _notaRepository = new NotaRepository(_context);
         var loggerFactory = new LoggerFactory();
         _logger = loggerFactory.CreateLogger<CancelarNota>();
-        _sut = new CancelarNota(_notaRepository, _unitOfWork, _logger);
+        _cursoClient = new CursoClient(new HttpClient(), loggerFactory.CreateLogger<CursoClient>());
+        _sut = new CancelarNota(_notaRepository, _unitOfWork, _logger, _cursoClient);
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
     }

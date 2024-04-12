@@ -9,6 +9,7 @@ using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Comum;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Comum;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Enums;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Interfaces;
+using TorneSe.ServicoLancamentoNotas.Dominio.Clients;
 using TorneSe.ServicoLancamentoNotas.Dominio.Entidades;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
 using Xunit;
@@ -22,6 +23,7 @@ public class AtualizarNotaTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<INotaRepository> _repositoryMock;
     private readonly Mock<ILogger<AtualizarNota>> _loggerMock;
+    private readonly Mock<ICursoClient> _cursoClientMock;
     private readonly AtualizarNota _sut;
 
     public AtualizarNotaTests(AtualizarNotaTestsFixture fixture)
@@ -30,7 +32,8 @@ public class AtualizarNotaTests
         _repositoryMock = new();
         _unitOfWorkMock = new();
         _loggerMock = new();
-        _sut = new(_repositoryMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+        _cursoClientMock = new Mock<ICursoClient>();
+        _sut = new(_repositoryMock.Object, _unitOfWorkMock.Object, _loggerMock.Object, _cursoClientMock.Object);
 
     }
 

@@ -9,6 +9,7 @@ using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Comum;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Comum;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Enums;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Interfaces;
+using TorneSe.ServicoLancamentoNotas.Dominio.Clients;
 using TorneSe.ServicoLancamentoNotas.Dominio.Entidades;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
 using Xunit;
@@ -22,6 +23,7 @@ public class CancelarNotaTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<INotaRepository> _repositoryMock;
     private readonly Mock<ILogger<CancelarNota>> _logger;
+    private readonly Mock<ICursoClient> _cursoClientMock;
     private readonly CancelarNota _sut;
 
     public CancelarNotaTests(CancelarNotaTestsFixture fixture)
@@ -30,7 +32,8 @@ public class CancelarNotaTests
         _repositoryMock = new();
         _unitOfWorkMock = new();
         _logger = new();
-        _sut = new(_repositoryMock.Object, _unitOfWorkMock.Object, _logger.Object);
+        _cursoClientMock = new Mock<ICursoClient>();
+        _sut = new(_repositoryMock.Object, _unitOfWorkMock.Object, _logger.Object, _cursoClientMock.Object);
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoCancelarInput_DeveCancelarNota))]

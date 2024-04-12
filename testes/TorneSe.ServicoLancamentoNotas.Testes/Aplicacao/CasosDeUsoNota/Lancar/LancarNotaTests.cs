@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Comum;
@@ -10,8 +11,10 @@ using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Lancar.interface
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Comum;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Enums;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Interfaces;
+using TorneSe.ServicoLancamentoNotas.Dominio.Clients;
 using TorneSe.ServicoLancamentoNotas.Dominio.Entidades;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
+using TorneSe.ServicoLancamentoNotas.Infra.Data.Clients.Curso;
 using Xunit;
 namespace TorneSe.ServicoLancamentoNotas.Testes.Aplicacao.CasosDeUsoNota.Lancar;
 
@@ -22,15 +25,18 @@ public class LancarNotaTests
     private readonly Mock<INotaRepository> _notaRepository;
     private readonly Mock<IUnitOfWork> _unitOfWork;
     private readonly Mock<ILogger<LancarNota>> _logger;
+    private readonly ICursoClient _cursoClient;
     private readonly ILancarNota _sut;
 
     public LancarNotaTests(LancarNotaTestsFixture fixture)
     {
         _fixture = fixture;
         _notaRepository = new Mock<INotaRepository>();
+        var loggerFactory = new LoggerFactory();
         _unitOfWork = new Mock<IUnitOfWork>();
         _logger = new Mock<ILogger<LancarNota>>();
-        _sut = new LancarNota(_notaRepository.Object, _unitOfWork.Object, _logger.Object);
+        _cursoClient = new CursoClient(new HttpClient(), loggerFactory.CreateLogger<CursoClient>());
+        _sut = new LancarNota(_notaRepository.Object, _unitOfWork.Object, _logger.Object, _cursoClient);
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoNotaValida_DeveSerSalva))]
