@@ -7,4 +7,8 @@ public interface IVariaveisAmbienteProvider
     string? ObterConnectionStringPorTenant(Tenant tenant);
     string? UrlBaseCursos { get; }
     string? PathObtercursos { get; }
+    int ErrosAntesDeAbrirCircuito { get; }
+    TimeSpan DuracaoCircuito { get; }
+    int NumeroRetentativas { get; }
+    int Timeout { get; } 
 }

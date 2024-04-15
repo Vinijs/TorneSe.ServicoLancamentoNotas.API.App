@@ -15,6 +15,8 @@ using TorneSe.ServicoLancamentoNotas.Dominio.Clients;
 using TorneSe.ServicoLancamentoNotas.Dominio.Entidades;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Clients.Curso;
+using TorneSe.ServicoLancamentoNotas.Infra.Data.Clients.SerializerContext;
+using TorneSe.ServicoLancamentoNotas.Infra.Data.Providers;
 using Xunit;
 namespace TorneSe.ServicoLancamentoNotas.Testes.Aplicacao.CasosDeUsoNota.Lancar;
 
@@ -35,7 +37,10 @@ public class LancarNotaTests
         var loggerFactory = new LoggerFactory();
         _unitOfWork = new Mock<IUnitOfWork>();
         _logger = new Mock<ILogger<LancarNota>>();
-        _cursoClient = new CursoClient(new HttpClient(), loggerFactory.CreateLogger<CursoClient>());
+        _cursoClient = new CursoClient(new HttpClient(),
+            loggerFactory.CreateLogger<CursoClient>(),
+            new VariaveisAmbienteProvider(),
+            new CursoSerializerContext());
         _sut = new LancarNota(_notaRepository.Object, _unitOfWork.Object, _logger.Object, _cursoClient);
     }
 

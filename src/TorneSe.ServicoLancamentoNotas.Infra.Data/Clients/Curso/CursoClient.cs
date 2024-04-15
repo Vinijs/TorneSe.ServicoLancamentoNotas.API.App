@@ -40,11 +40,11 @@ public class CursoClient : ICursoClient
             _logger
                 .LogError($"Ocorreu um erro ao consultar o cursodo aluno {alunoId}. Informações resposta {{@resultado}}", 
                 resultado);
-            return default;
+            return default!;
         }
 
         return JsonSerializer
             .Deserialize
-            (await resultado.Content.ReadAsStreamAsync(cancellationToken), _serializerContext.IEnumerableCurso);
+            (await resultado.Content.ReadAsStreamAsync(cancellationToken), _serializerContext.IEnumerableCurso)!;
     }
 }
