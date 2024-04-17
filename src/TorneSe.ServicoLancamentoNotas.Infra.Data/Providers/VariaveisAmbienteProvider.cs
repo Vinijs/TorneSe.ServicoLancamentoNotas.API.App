@@ -1,4 +1,5 @@
-﻿using TorneSe.ServicoLancamentoNotas.Dominio.ValueObjects;
+﻿using System.Runtime.Serialization;
+using TorneSe.ServicoLancamentoNotas.Dominio.ValueObjects;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Constantes;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Providers.Interfaces;
 
@@ -43,6 +44,7 @@ public class VariaveisAmbienteProvider : IVariaveisAmbienteProvider
     public string? AwsAccessKey => Buscar(VariaveisAmbienteConstantes.AWS_ACCESS_KEY);
 
     public string? AwsSecretAccessKey => Buscar(VariaveisAmbienteConstantes.AWS_SECRET_ACCESS_KEY);
+    public string ElasticSearchUrl => Buscar(VariaveisAmbienteConstantes.ELASTIC_SEARCH_URL)!;
 
     private readonly HashSet<string> _tenants;
 
@@ -72,6 +74,5 @@ public class VariaveisAmbienteProvider : IVariaveisAmbienteProvider
     private string? Buscar(string nome)
         => Environment.GetEnvironmentVariable(nome);
 
-    public string? ObterNomeFila(string nomeFila) 
-        => Buscar(nomeFila);
+    public string? ObterNomeFila(string nomeFila) => Buscar(nomeFila);
 }

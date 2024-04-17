@@ -15,5 +15,7 @@ public interface IVariaveisAmbienteProvider
     string? AwsAccessKey { get; }
     string? AwsSecretAccessKey { get; }
     string? ObterNomeFila(string nomeFila);
-    
+    string ElasticSearchUrl { get; }
+
+
 }

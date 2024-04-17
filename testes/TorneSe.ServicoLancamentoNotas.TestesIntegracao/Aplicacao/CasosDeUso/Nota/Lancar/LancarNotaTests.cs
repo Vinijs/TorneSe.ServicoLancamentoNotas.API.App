@@ -20,6 +20,8 @@ using TorneSe.ServicoLancamentoNotas.Infra.Data.Contexto;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Providers;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Repositories;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.UoW;
+using TorneSe.ServicoLancamentoNotas.TestesIntegracao.FakeComponents.CursoClient;
+using TorneSe.ServicoLancamentoNotas.TestesIntegracao.FakeComponents.Mediator;
 using Xunit;
 
 namespace TorneSe.ServicoLancamentoNotas.TestesIntegracao.Aplicacao.CasosDeUso.Nota.Lancar;
@@ -43,11 +45,9 @@ public class LancarNotaTests
         _notaRepository = new NotaRepository(_context);
         var loggerFactory = new LoggerFactory();
         _logger = loggerFactory.CreateLogger<LancarNota>();
-        _cursoClient = new CursoClient(new HttpClient(),
-            loggerFactory.CreateLogger<CursoClient>(),
-            new VariaveisAmbienteProvider(),
-            new CursoSerializerContext());
-        _sut = new LancarNota(_notaRepository, _unitOfWork, _logger, _cursoClient);
+        _cursoClient = new CursoFakeClient();
+        var mediatorFake = new MediatorFakeHandler();
+        _sut = new LancarNota(_notaRepository, _unitOfWork, _logger, _cursoClient, mediatorFake);
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
     }

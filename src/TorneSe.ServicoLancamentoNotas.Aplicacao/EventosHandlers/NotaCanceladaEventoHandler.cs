@@ -7,23 +7,20 @@ using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
 
 namespace TorneSe.ServicoLancamentoNotas.Aplicacao.EventosHandlers;
 
-public class NotaLancadaEventoHandler : INotaLancadaEventoHandler
+public class NotaCanceladaEventoHandler : INotaCanceladaEventoHandler
 {
-    private INotaLancadaMensagemClient _mensagemClient; 
-    private INotaRepository _notaRepository;
-    private ILogger<NotaLancadaEventoHandler> _logger;
+    private readonly INotaCanceladaMensagemClient _mensagemClient;
+    private readonly INotaRepository _notaRepository;
+    private readonly ILogger<NotaCanceladaEventoHandler> _logger;
 
-    public NotaLancadaEventoHandler(
-        INotaLancadaMensagemClient mensagemClient, 
-        INotaRepository notaRepository,
-        ILogger<NotaLancadaEventoHandler> logger)
+    public NotaCanceladaEventoHandler(INotaRepository notaRepository,
+                                      ILogger<NotaCanceladaEventoHandler> logger)
     {
-        _mensagemClient = mensagemClient;
         _notaRepository = notaRepository;
         _logger = logger;
     }
 
-    public async Task Handle(NotaLancadaEvento notification, CancellationToken cancellationToken)
+    public async Task Handle(NotaCanceladaEvento notification, CancellationToken cancellationToken)
     {
         var nota = await _notaRepository.Buscar(notification.NotaId, cancellationToken);
 
@@ -33,10 +30,7 @@ public class NotaLancadaEventoHandler : INotaLancadaEventoHandler
             return;
         }
 
-        bool existeNotaJaCancelada = await _notaRepository
-            .ExisteNotaCanceladaPorAlunoEAtividade(nota.AlunoId, nota.AtividadeId, cancellationToken);
-
-        var mensagem = NotaLancadaMensagem.DeNota(nota, notification.CorrelationId, existeNotaJaCancelada);
+        var mensagem = NotaCanceladaMensagem.DeNota(nota, notification.CorrelationId);
 
         nota.AlterarStatusIntegracaoParaEnviada();
 

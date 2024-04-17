@@ -24,6 +24,7 @@ public class CancelarNotaTests
     private readonly Mock<INotaRepository> _repositoryMock;
     private readonly Mock<ILogger<CancelarNota>> _logger;
     private readonly Mock<ICursoClient> _cursoClientMock;
+    private readonly Mock<IMediatorHandler> _mediatorMock;
     private readonly CancelarNota _sut;
 
     public CancelarNotaTests(CancelarNotaTestsFixture fixture)
@@ -32,8 +33,9 @@ public class CancelarNotaTests
         _repositoryMock = new();
         _unitOfWorkMock = new();
         _logger = new();
-        _cursoClientMock = new Mock<ICursoClient>();
-        _sut = new(_repositoryMock.Object, _unitOfWorkMock.Object, _logger.Object, _cursoClientMock.Object);
+        _cursoClientMock = new();
+        _mediatorMock = new();
+        _sut = new(_repositoryMock.Object, _unitOfWorkMock.Object, _logger.Object, _cursoClientMock.Object, _mediatorMock.Object);
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoCancelarInput_DeveCancelarNota))]

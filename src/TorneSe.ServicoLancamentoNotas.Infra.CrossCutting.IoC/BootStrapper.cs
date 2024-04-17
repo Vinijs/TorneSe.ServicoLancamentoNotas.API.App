@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
+using Microsoft.Extensions.Hosting;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Behaviors;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.CasosDeUsos.Nota.Consultar;
 using TorneSe.ServicoLancamentoNotas.Aplicacao.Interfaces;
@@ -23,12 +24,16 @@ using TorneSe.ServicoLancamentoNotas.Infra.Data.Providers.Interfaces;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Repositories;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.UoW;
 using TorneSe.ServicoLancamentoNotas.Infra.Data.Visitors;
+using TorneSe.ServicoLancamentoNotas.Infra.HealthCheck;
+using TorneSe.ServicoLancamentoNotas.Infra.Data.Configuracoes;
+using TorneSe.ServicoLancamentoNotas.Infra.CrossCutting.IoC.Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace TorneSe.ServicoLancamentoNotas.Infra.CrossCutting.IoC;
 
 public static class BootStrapper
 {
-    public static void RegistrarServicos(this IServiceCollection services)
+    public static void RegistrarServicos(this IServiceCollection services, IHostEnvironment environment, IConfiguration configuration)
     {
         services
             .RegistrarRepositorios()
@@ -42,7 +47,10 @@ public static class BootStrapper
             .RegistrarClients()
             .RegistrarSerializers()
             .RegistrarContextoSqs()
-            .RegistrarMensagemClients();
+            .RegistrarMensagemClients()
+            .CarregarVariaveisDeAmbiente(environment.IsDevelopment())
+            .AdicionarConfiguracoesHealthChecks()
+            .ConfigurarSerilog(configuration, environment);
     }
 
     private static IServiceCollection RegistrarRepositorios(this IServiceCollection services)
@@ -100,4 +108,13 @@ public static class BootStrapper
 
     private static IServiceCollection RegistrarMensagemClients(this IServiceCollection services)
         => services.AddScoped<INotaLancadaMensagemClient, NotaLancadaMensagemClient>();
+
+    private static IServiceCollection CarregarVariaveisDeAmbiente(this IServiceCollection services, bool ehDesenvolvimento) 
+    {
+        if (ehDesenvolvimento)
+            ArquivoEnv.CarregarVariaveis();
+
+        return services;
+    }
+
 }
