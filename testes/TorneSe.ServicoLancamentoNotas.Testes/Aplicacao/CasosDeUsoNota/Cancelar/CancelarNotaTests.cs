@@ -12,6 +12,7 @@ using TorneSe.ServicoLancamentoNotas.Aplicacao.Interfaces;
 using TorneSe.ServicoLancamentoNotas.Dominio.Clients;
 using TorneSe.ServicoLancamentoNotas.Dominio.Entidades;
 using TorneSe.ServicoLancamentoNotas.Dominio.Repositories;
+using TorneSe.ServicoLancamentoNotas.Testes.Fakes;
 using Xunit;
 
 namespace TorneSe.ServicoLancamentoNotas.Testes.Aplicacao.CasosDeUsoNota.Cancelar;
@@ -47,6 +48,9 @@ public class CancelarNotaTests
         _repositoryMock.Setup(x => x.BuscarNotaPorAlunoEAtividade(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(nota);
 
+        _cursoClientMock.Setup(x => x.ObterInformacoesCursoAluno(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CursoFake.ObterCursoAluno(input.AtividadeId, input.AlunoId, input.ProfessorId));
+
         var output = await _sut.Handle(input, CancellationToken.None);
 
         output.Should().NotBeNull();
@@ -56,6 +60,32 @@ public class CancelarNotaTests
         _repositoryMock.Verify(x => x.BuscarNotaPorAlunoEAtividade(input.AlunoId, input.AtividadeId, It.IsAny<CancellationToken>()));
         _repositoryMock.Verify(x => x.Atualizar(It.IsAny<Nota>(), It.IsAny<CancellationToken>()), Times.Once);
         _unitOfWorkMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _unitOfWorkMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact(DisplayName = nameof(Handle_QuandoVinculoCursoNaoIdentificado_DeveRetornarErro))]
+    [Trait("Aplicacao", "Nota - Casos de Uso")]
+    public async Task Handle_QuandoVinculoCursoNaoIdentificado_DeveRetornarErro()
+    {
+        var nota = _fixture.RetornaNota();
+        var input = _fixture.RetornaInput();
+        _repositoryMock.Setup(x => x.BuscarNotaPorAlunoEAtividade(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(nota);
+
+        _cursoClientMock.Setup(x => x.ObterInformacoesCursoAluno(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CursoFake.ObterCursoAluno());
+
+        var output = await _sut.Handle(input, CancellationToken.None);
+
+        output.Should().NotBeNull();
+        output.Should().BeOfType<Resultado<NotaOutputModel>>();
+        output.Sucesso.Should().BeFalse();
+        output.Erro.Should().Be(TipoErro.NaoFoiPossivelValidarVinculosCursos);
+        output.DescricaoErro.Should().NotBeEmpty();
+        output.Dado.Should().BeNull();
+        _repositoryMock.Verify(x => x.BuscarNotaPorAlunoEAtividade(input.AlunoId, input.AtividadeId, It.IsAny<CancellationToken>()), Times.Once);
+        _repositoryMock.Verify(x => x.Atualizar(It.IsAny<Nota>(), It.IsAny<CancellationToken>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact(DisplayName = nameof(Handle_QuandoNotaNaoEncontrada_DeveRetornarInSucesso))]

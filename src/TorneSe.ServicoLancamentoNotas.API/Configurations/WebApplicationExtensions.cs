@@ -55,7 +55,7 @@ public static class WebApplicationExtensions
         if (applicationBuilder.Environment.IsDevelopment())
             ArquivoEnv.CarregarVariaveis();
 
-        applicationBuilder.WebHost.UseSerilog();
+        applicationBuilder.Host.UseSerilog();
 
         var app = applicationBuilder.Build();
 
