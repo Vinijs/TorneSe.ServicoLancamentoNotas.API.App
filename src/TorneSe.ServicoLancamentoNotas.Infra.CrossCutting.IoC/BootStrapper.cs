@@ -64,7 +64,10 @@ public static class BootStrapper
             //options.UseInMemoryDatabase("db-teste-in-memory");
         });
     private static IServiceCollection RegistrarHandlers(this IServiceCollection services)
-        => services.AddMediatR(typeof(ConsultaNota));
+        => services.AddMediatR(opt =>
+        {
+            opt.RegisterServicesFromAssemblies(typeof(ConsultaNota).Assembly);
+        });
 
     private static IServiceCollection RegistrarValidacoes(this IServiceCollection services)
          => services.AddValidatorsFromAssembly(typeof(LancarNotaInputValidator).Assembly);
